@@ -33,14 +33,35 @@ namespace OneBeyondApi.DataAccess
 
                 if (search != null)
                 {
-                    if (!string.IsNullOrEmpty(search.Author)) {
+                    if (!string.IsNullOrEmpty(search.Author))
+                    {
                         list = list.Where(x => x.Book.Author.Name.Contains(search.Author));
                     }
-                    if (!string.IsNullOrEmpty(search.BookName)) {
+                    if (!string.IsNullOrEmpty(search.BookName))
+                    {
                         list = list.Where(x => x.Book.Name.Contains(search.BookName));
                     }
                 }
-                    
+
+                return list.ToList();
+            }
+        }
+
+        public List<BorrowerLoans> GetOnLoan()
+        {
+            using (var context = new LibraryContext())
+            {
+                var list = context.Catalogue
+                    .Include(x => x.Book)
+                    .Include(x => x.OnLoanTo)
+                    .Where(x => x.OnLoanTo != null)
+                    .GroupBy(x => x.OnLoanTo)
+                    .Select(x => new BorrowerLoans
+                    {
+                        Borrower = x.Key!,
+                        BookNames = x.Select(y => y.Book.Name)
+                    });
+
                 return list.ToList();
             }
         }
