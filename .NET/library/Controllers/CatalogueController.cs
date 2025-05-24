@@ -50,6 +50,7 @@ namespace OneBeyondApi.Controllers
                 ReturnBookResult.Success => Ok(),
                 ReturnBookResult.BookNotFound => NotFound("Book not found"),
                 ReturnBookResult.BookNotOnLoan => BadRequest("Book is not currently on loan"),
+                ReturnBookResult.FineIssued => Ok("Fine was issued"),
                 _ => StatusCode(500, "An unexpected error occurred")
             };
         }

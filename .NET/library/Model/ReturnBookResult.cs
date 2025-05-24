@@ -4,6 +4,7 @@
     {
         Success,
         BookNotFound,
-        BookNotOnLoan
+        BookNotOnLoan,
+        FineIssued,
     }
 }

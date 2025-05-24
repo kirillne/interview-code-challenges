@@ -1,13 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using OneBeyondApi.Model;
 
 namespace OneBeyondApi.DataAccess
 {
     public class CatalogueRepository : ICatalogueRepository
     {
-        public CatalogueRepository()
+        private readonly LibrarySettings _librarySettings;
+        private readonly IFineRepository _fineRepository;
+
+        public CatalogueRepository(IOptions<LibrarySettings> options, IFineRepository fineRepository)
         {
+            _librarySettings = options.Value;
+            _fineRepository = fineRepository;
         }
+
         public List<BookStock> GetCatalogue()
         {
             using (var context = new LibraryContext())
@@ -87,10 +94,17 @@ namespace OneBeyondApi.DataAccess
                     return ReturnBookResult.BookNotOnLoan;
                 }
 
+                Fine? fine = null;
+
+                if (bookStock.LoanEndDate < DateTime.Now)
+                {
+                    fine = _fineRepository.AddFine(context, bookStock.OnLoanTo, _librarySettings.LoanOverdueFineAmount);
+                }
+
                 bookStock.OnLoanTo = null;
                 bookStock.LoanEndDate = null;
                 context.SaveChanges();
-                return ReturnBookResult.Success;
+                return fine == null ?  ReturnBookResult.Success : ReturnBookResult.FineIssued;
             }
         }
     }
