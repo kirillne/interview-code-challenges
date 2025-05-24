@@ -59,7 +59,11 @@ namespace OneBeyondApi.DataAccess
                     .Select(x => new BorrowerLoans
                     {
                         Borrower = x.Key!,
-                        BookNames = x.Select(y => y.Book.Name)
+                        Books = x.Select(b => new BorrowerLoans.LoanedBook
+                        { 
+                            BookName = b.Book.Name,
+                            BookStockId = b.Id 
+                        })
                     });
 
                 return list.ToList();
