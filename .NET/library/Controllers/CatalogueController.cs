@@ -15,7 +15,7 @@ namespace OneBeyondApi.Controllers
         public CatalogueController(ILogger<CatalogueController> logger, ICatalogueRepository catalogueRepository)
         {
             _logger = logger;
-            _catalogueRepository = catalogueRepository;   
+            _catalogueRepository = catalogueRepository;
         }
 
         [HttpGet]
@@ -37,6 +37,21 @@ namespace OneBeyondApi.Controllers
         public IList<BorrowerLoans> GetOnLoan()
         {
             return _catalogueRepository.GetOnLoan();
+        }
+
+        [HttpPost]
+        [Route("ReturnBook/{bookStockId}")]
+        public IActionResult ReturnBook(Guid bookStockId)
+        {
+            var result = _catalogueRepository.ReturnBook(bookStockId);
+
+            return result switch
+            {
+                ReturnBookResult.Success => Ok(),
+                ReturnBookResult.BookNotFound => NotFound("Book not found"),
+                ReturnBookResult.BookNotOnLoan => BadRequest("Book is not currently on loan"),
+                _ => StatusCode(500, "An unexpected error occurred")
+            };
         }
     }
 }

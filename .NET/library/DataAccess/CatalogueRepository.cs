@@ -69,5 +69,29 @@ namespace OneBeyondApi.DataAccess
                 return list.ToList();
             }
         }
+
+        public ReturnBookResult ReturnBook(Guid bookStockId)
+        {
+            using (var context = new LibraryContext())
+            {
+                var bookStock = context.Catalogue
+                    .Include(x => x.OnLoanTo)
+                    .FirstOrDefault(x => x.Id == bookStockId);
+
+                if (bookStock == null)
+                {
+                    return ReturnBookResult.BookNotFound;
+                }
+                if(bookStock.OnLoanTo == null)
+                {
+                    return ReturnBookResult.BookNotOnLoan;
+                }
+
+                bookStock.OnLoanTo = null;
+                bookStock.LoanEndDate = null;
+                context.SaveChanges();
+                return ReturnBookResult.Success;
+            }
+        }
     }
 }
