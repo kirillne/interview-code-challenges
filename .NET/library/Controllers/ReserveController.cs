@@ -40,5 +40,21 @@ namespace OneBeyondApi.Controllers
         {
             return _reserveRepository.GetReserves();
         }
+
+        [HttpGet]
+        [Route("CheckBookAvailability")]
+        public IActionResult CheckBookAvailability(Guid borrowerId, Guid bookId)
+        {
+            var result = _reserveRepository.CheckBookAvailability(borrowerId, bookId);
+            return result.Status switch
+            {
+                CheckAvailabilityResult.BookAvailabilityStatus.BookNotFound => NotFound("Book not found"),
+                CheckAvailabilityResult.BookAvailabilityStatus.BorrowerNotFound => NotFound("Borrower not found"),
+                CheckAvailabilityResult.BookAvailabilityStatus.BorrowerHasTheBook => BadRequest("Borrower already has the book on loan"),
+                CheckAvailabilityResult.BookAvailabilityStatus.BookIsAvailableImmediately => Ok(result),
+                CheckAvailabilityResult.BookAvailabilityStatus.BookIsAvailableAfterReservation => Ok(result),
+                _ => StatusCode(500, "An unexpected error occurred")
+            };
+        }
     }
 }
