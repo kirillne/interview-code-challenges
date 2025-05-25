@@ -10,6 +10,7 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBorrowerRepository, BorrowerRepository>();
 builder.Services.AddScoped<ICatalogueRepository, CatalogueRepository>();
 builder.Services.AddScoped<IFineRepository, FineRepository>();
+builder.Services.AddScoped<IReserveRepository, ReserveRepository>();
 
 builder.Services.Configure<LibrarySettings>(builder.Configuration.GetSection("LibrarySettings"));
 
