@@ -43,14 +43,14 @@ namespace OneBeyondApi.Controllers
         [Route("ReturnBook/{bookStockId}")]
         public IActionResult ReturnBook(Guid bookStockId)
         {
-            var result = _catalogueRepository.ReturnBook(bookStockId);
+            var (result, fine) = _catalogueRepository.ReturnBook(bookStockId);
 
             return result switch
             {
                 ReturnBookResult.Success => Ok(),
                 ReturnBookResult.BookNotFound => NotFound("Book not found"),
                 ReturnBookResult.BookNotOnLoan => BadRequest("Book is not currently on loan"),
-                ReturnBookResult.FineIssued => Ok("Fine was issued"),
+                ReturnBookResult.FineIssued => Ok(fine),
                 _ => StatusCode(500, "An unexpected error occurred")
             };
         }

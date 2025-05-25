@@ -77,7 +77,7 @@ namespace OneBeyondApi.DataAccess
             }
         }
 
-        public ReturnBookResult ReturnBook(Guid bookStockId)
+        public (ReturnBookResult, Fine?) ReturnBook(Guid bookStockId)
         {
             using (var context = new LibraryContext())
             {
@@ -87,11 +87,11 @@ namespace OneBeyondApi.DataAccess
 
                 if (bookStock == null)
                 {
-                    return ReturnBookResult.BookNotFound;
+                    return (ReturnBookResult.BookNotFound, null);
                 }
-                if(bookStock.OnLoanTo == null)
+                if (bookStock.OnLoanTo == null)
                 {
-                    return ReturnBookResult.BookNotOnLoan;
+                    return (ReturnBookResult.BookNotOnLoan, null);
                 }
 
                 Fine? fine = null;
@@ -104,7 +104,7 @@ namespace OneBeyondApi.DataAccess
                 bookStock.OnLoanTo = null;
                 bookStock.LoanEndDate = null;
                 context.SaveChanges();
-                return fine == null ?  ReturnBookResult.Success : ReturnBookResult.FineIssued;
+                return fine == null ? (ReturnBookResult.Success, null) : (ReturnBookResult.FineIssued, fine);
             }
         }
     }
