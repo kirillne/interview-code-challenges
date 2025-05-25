@@ -12,7 +12,6 @@ namespace OneBeyondApi.DataAccess
                 Borrower = borrower,
                 Amount = amount,
                 IssueDateTime = DateTime.Now,
-                Id = Guid.NewGuid()
             };
             context.Fines.Add(fine);
             return fine;

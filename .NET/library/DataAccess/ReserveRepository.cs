@@ -57,7 +57,6 @@ namespace OneBeyondApi.DataAccess
 
                 var reserve = new Reserve
                 {
-                    Id = Guid.NewGuid(),
                     Borrower = borrower,
                     Book = book,
                     ReserveDateTime = DateTime.Now
@@ -94,7 +93,7 @@ namespace OneBeyondApi.DataAccess
                 if(bookStocks.Any(x => x.OnLoanTo != null && x.OnLoanTo.Id == borrowerId))
                 {
                     return new CheckAvailabilityResult(CheckAvailabilityResult.BookAvailabilityStatus.BorrowerHasTheBook);
-        }
+                }
 
                 var reserves = context.Reserves.Include(x => x.Borrower).Where(x => x.Book.Id == bookId).OrderBy(x => x.ReserveDateTime).ToList()
                     .TakeWhile(x => x.Borrower.Id != borrowerId).ToList();
