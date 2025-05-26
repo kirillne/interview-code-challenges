@@ -44,6 +44,14 @@ namespace OneBeyondApi
                 ISBN = "3134324111"
             };
 
+            var popularBook = new Book
+            {
+                Name = "Popular Book",
+                Format = BookFormat.Paperback,
+                Author = ernestMonkjack,
+                ISBN = "1234567890"
+            };
+
             var daveSmith = new Borrower
             {
                 Name = "Dave Smith",
@@ -54,6 +62,24 @@ namespace OneBeyondApi
             {
                 Name = "Liana James",
                 EmailAddress = "liana@gmail.com"
+            };
+
+            var firstBorrower = new Borrower
+            {
+                Name = "First Borrower",
+                EmailAddress = "first@gmail.com"
+            };
+
+            var secondBorrower = new Borrower
+            {
+                Name = "Second Borrower",
+                EmailAddress = "second@gmail.com"
+            };
+
+            var thirdBorrower = new Borrower
+            {
+                Name = "Third Borrower",
+                EmailAddress = "third@gmail.com"
             };
 
             var bookOnLoanUntilToday = new BookStock {
@@ -83,6 +109,34 @@ namespace OneBeyondApi
                 LoanEndDate = null
             };
 
+            var popularBookOnShortLoan = new BookStock
+            {
+                Book = popularBook,
+                OnLoanTo = daveSmith,
+                LoanEndDate = DateTime.Now.Date.AddDays(7)
+            };
+
+            var popularBookOnLongLoan = new BookStock
+            {
+                Book = popularBook,
+                OnLoanTo = lianaJames,
+                LoanEndDate = DateTime.Now.Date.AddDays(40)
+            };
+
+            var popularBookFirstReserve = new Reserve
+            {
+                Book = popularBook,
+                Borrower = firstBorrower,
+                ReserveDateTime = DateTime.Now
+            };
+
+            var popularBookSecondReserve = new Reserve
+            {
+                Book = popularBook,
+                Borrower = secondBorrower,
+                ReserveDateTime = DateTime.Now.AddSeconds(1)
+            };
+
             using (var context = new LibraryContext())
             {
                 context.Authors.Add(ernestMonkjack);
@@ -93,14 +147,23 @@ namespace OneBeyondApi
                 context.Books.Add(clayBook);
                 context.Books.Add(agileBook);
                 context.Books.Add(rustBook);
+                context.Books.Add(popularBook);
 
                 context.Borrowers.Add(daveSmith);
                 context.Borrowers.Add(lianaJames);
+                context.Borrowers.Add(firstBorrower);
+                context.Borrowers.Add(secondBorrower);
+                context.Borrowers.Add(thirdBorrower);
 
                 context.Catalogue.Add(bookOnLoanUntilToday);
                 context.Catalogue.Add(bookNotOnLoan);
                 context.Catalogue.Add(bookOnLoanUntilNextWeek);
                 context.Catalogue.Add(rustBookStock);
+                context.Catalogue.Add(popularBookOnShortLoan);
+                context.Catalogue.Add(popularBookOnLongLoan);
+
+                context.Reserves.Add(popularBookFirstReserve);
+                context.Reserves.Add(popularBookSecondReserve);
 
                 context.SaveChanges();
 
